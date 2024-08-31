@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/images")
+@RequestMapping("api/v1/images")
 public class ImageController {
 
     private final ImageService imageService;
@@ -38,6 +38,7 @@ public class ImageController {
     @GetMapping("/image/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) throws SQLException {
         Image image = imageService.getImage(imageId);
+        System.out.println(image);
 
         // Create a bytearray that hold the bytes of the image
         ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int) image.getImage().length()));

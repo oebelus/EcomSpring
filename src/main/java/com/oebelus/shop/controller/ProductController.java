@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/products")
+@RequestMapping("api/v1/products")
 public class ProductController {
 
     private final IProductService productService;
@@ -144,6 +144,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse> countProductByBrandAndName(@RequestParam String brand, @RequestParam String name) {
         try {
             var count = productService.countProductsByBrandAndName(brand, name);
+            System.out.println("count: " + count);
             return ResponseEntity.ok(new ApiResponse("Count: ", count));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));

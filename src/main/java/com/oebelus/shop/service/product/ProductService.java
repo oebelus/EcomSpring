@@ -30,9 +30,11 @@ public class ProductService implements IProductService {
                     return categoryRepository.save(newCategory);
                 });
 
-        request.setCategory(category);
+        // Create a Product entity and associate the category
+        Product product = createProduct(request, category);
 
-        return productRepository.save(createProduct(request, category));
+        // Save the product to the database
+        return productRepository.save(product);
     }
 
     private Product createProduct(AddProductRequest request, Category category) {
@@ -52,10 +54,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product updateProduct(ProductUpdateRequest request, Long productId) {
-        return productRepository.findById(productId)
+    public void updateProduct(ProductUpdateRequest request, Long productId) {
+        productRepository.findById(productId)
                 .map(existingProduct -> updateExistingProduct(existingProduct, request))
-                .map(productRepository :: save)
+                .map(productRepository::save)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found!"));
     }
 
@@ -100,7 +102,7 @@ public class ProductService implements IProductService {
 
     @Override
     public List<Product> getProductsByName(String name) {
-        return productRepository.findByNane(name);
+        return productRepository.findByName(name);
     }
 
     @Override

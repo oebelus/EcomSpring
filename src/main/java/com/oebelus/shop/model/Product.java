@@ -1,5 +1,6 @@
 package com.oebelus.shop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +26,9 @@ public class Product {
     private int inventory;
 
     // It doesn't depend on the product, unlike image, only the relationship between them that is deleted (orphanRemoval);
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
+    @JsonBackReference
     private Category category;
 
     // If the product is deleted (and some other operations), all the images associated with it will be deleted too;
