@@ -43,7 +43,7 @@ public class ImageService implements IImageService {
                 // Create a new image and set its properties
                 Image image = new Image();
                 image.setFileName(file.getOriginalFilename());
-                image.setFileType(file.getOriginalFilename());
+                image.setFileType(file.getContentType());
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
 
@@ -78,7 +78,7 @@ public class ImageService implements IImageService {
         Image image = getImage(imageId);
         try {
             image.setFileName(file.getOriginalFilename());
-            image.setFileType(file.getOriginalFilename());
+            image.setFileType(file.getContentType());
             image.setImage(new SerialBlob(file.getBytes()));
             imageRepository.save(image);
         } catch (IOException | SQLException e) {
