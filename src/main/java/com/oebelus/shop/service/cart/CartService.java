@@ -4,6 +4,7 @@ import com.oebelus.shop.exceptions.ResourceNotFoundException;
 import com.oebelus.shop.model.Cart;
 import com.oebelus.shop.repository.CartItemRepository;
 import com.oebelus.shop.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class CartService implements ICartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void clearCart(Long id) {
         Cart cart = getCart(id);
