@@ -1,9 +1,12 @@
 package com.oebelus.shop.controller;
 
 import com.oebelus.shop.exceptions.ResourceNotFoundException;
+import com.oebelus.shop.model.Cart;
+import com.oebelus.shop.model.User;
 import com.oebelus.shop.response.ApiResponse;
 import com.oebelus.shop.service.cart.ICartService;
 import com.oebelus.shop.service.cartItem.ICartItemService;
+import com.oebelus.shop.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +21,15 @@ public class CartItemController {
 
     private final ICartItemService cartItemService;
     private final ICartService cartService;
+    private final IUserService userService;
 
     @PostMapping("item/add")
-    public ResponseEntity<ApiResponse> addItem(@RequestParam(required = false) Long cartId, @RequestParam Long productId, @RequestParam int quantity) {
+    public ResponseEntity<ApiResponse> addItem(@RequestParam Long productId, @RequestParam int quantity) {
         try {
-            // If no cart is generated, we generate a cart ID
-            if (cartId == null) cartId = cartService.initializeNewCart();
+            User user = userService.getUserById(1L);
+            Cart cart = cartService.initializeNewCart(user);
 
-            cartItemService.addItem(cartId, productId, quantity);
+            cartItemService.addItem(cart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Add item success!", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));

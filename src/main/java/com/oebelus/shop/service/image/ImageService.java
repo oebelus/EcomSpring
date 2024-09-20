@@ -60,10 +60,11 @@ public class ImageService implements IImageService {
                 imageRepository.save(savedImage);
 
                 // Set the image data to be sent to the client
-                ImageDTO imageDto = new ImageDTO();
-                imageDto.setImageId(savedImage.getId());
-                imageDto.setDownloadUrl(savedImage.getDownloadUrl());
-                imageDto.setImageName(savedImage.getFileName());
+                ImageDTO imageDto = new ImageDTO(
+                        savedImage.getId(),
+                        savedImage.getFileName(),
+                        savedImage.getDownloadUrl()
+                );
 
                 savedImageDtos.add(imageDto);
             } catch (IOException | SQLException e) {
