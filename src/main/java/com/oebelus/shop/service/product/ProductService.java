@@ -7,12 +7,14 @@ import com.oebelus.shop.repository.CategoryRepository;
 import com.oebelus.shop.repository.ProductRepository;
 import com.oebelus.shop.request.AddProductRequest;
 import com.oebelus.shop.request.ProductUpdateRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class ProductService implements IProductService {

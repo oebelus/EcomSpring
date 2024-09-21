@@ -9,6 +9,9 @@ import com.oebelus.shop.request.CreateUserRequest;
 import com.oebelus.shop.request.UpdateUserRequest;
 import com.oebelus.shop.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +25,8 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final OrderService orderService;
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found!"));
@@ -36,7 +41,7 @@ public class UserService implements IUserService {
                     user.setFirstName(req.getFirstName());
                     user.setLastName(req.getLastName());
                     user.setEmail(req.getEmail());
-                    user.setPassword(req.getPassword());
+                    user.setPassword(passwordEncoder.encode(req.getPassword()));
                     return userRepository.save(user);
                 }).orElseThrow(() -> new AlreadyExistsException(request.getEmail() + " already exists!"));
     }
@@ -113,5 +118,13 @@ public class UserService implements IUserService {
                 image.getFileName(),
                 image.getDownloadUrl()
         );
+    }
+
+    @Override
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email);
     }
 }

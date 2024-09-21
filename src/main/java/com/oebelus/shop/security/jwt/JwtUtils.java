@@ -11,15 +11,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Date;
 import java.util.List;
 
 @Component
 public class JwtUtils {
 
-    @Value("${auth.token.jwtSecret}")
+    @Value("SD5F416S5D6F165S65D6F654SDF3XC3VX3C465SD6545FS213DF6546SF6S5D123F")
     private String jwtSecret;
 
-    @Value("${auth.token.expirationInMils}")
+    @Value("3600000")
     private int expirationTime;
 
     public String generateTokenForUser(Authentication authentication) {
@@ -34,9 +35,9 @@ public class JwtUtils {
                 .setSubject(userPrincipal.getEmail())
                 .claim("id", userPrincipal.getId())
                 .claim("roles", roles)
-                .setIssuedAt(new java.util.Date())
-                .setExpiration(new java.util.Date((new java.util.Date()).getTime() + expirationTime))
-                .signWith(key(), SignatureAlgorithm.ES256)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + expirationTime))
+                .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -55,7 +56,11 @@ public class JwtUtils {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
+            Jwts
+                    .parserBuilder()
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(authToken);
             return true;
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             throw new JwtException(e.getMessage());

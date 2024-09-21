@@ -7,12 +7,12 @@ import com.oebelus.shop.response.ApiResponse;
 import com.oebelus.shop.service.cart.ICartService;
 import com.oebelus.shop.service.cartItem.ICartItemService;
 import com.oebelus.shop.service.user.IUserService;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,13 +26,15 @@ public class CartItemController {
     @PostMapping("item/add")
     public ResponseEntity<ApiResponse> addItem(@RequestParam Long productId, @RequestParam int quantity) {
         try {
-            User user = userService.getUserById(1L);
+            User user = userService.getAuthenticatedUser();
             Cart cart = cartService.initializeNewCart(user);
 
             cartItemService.addItem(cart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Add item success!", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (JwtException e) {
+            return ResponseEntity.status(UNAUTHORIZED).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
