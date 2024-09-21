@@ -2,6 +2,8 @@ package com.oebelus.shop.security.config;
 
 import com.oebelus.shop.security.jwt.AuthTokenFilter;
 import com.oebelus.shop.security.jwt.JwtAuthEntryPoint;
+import com.oebelus.shop.security.jwt.JwtUtils;
+import com.oebelus.shop.security.user.ShopUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,8 @@ import java.util.List;
 public class ShopConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
+    private final JwtUtils jwtUtils;
+    private final ShopUserDetailsService shopUserDetailsService;
 
     private static final List<String> SECURE_URLS = List.of(
             "/api/v1/carts/**",
@@ -46,7 +50,7 @@ public class ShopConfig {
     }
 
     public AuthTokenFilter authTokenFilter() {
-        return new AuthTokenFilter();
+        return new AuthTokenFilter(jwtUtils, shopUserDetailsService);
     }
 
     @Bean

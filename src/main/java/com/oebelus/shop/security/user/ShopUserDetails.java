@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShopUserDetails implements UserDetails {
+public class ShopUserDetails implements UserDetails { // the core user information used for authentication and authorization in the application
 
     private Long Id;
     private String email;
@@ -25,12 +25,15 @@ public class ShopUserDetails implements UserDetails {
 
     private Collection<GrantedAuthority> authorities;
 
+    // Static factory method to create ShopUserDetails from User entity
     public static ShopUserDetails buildUserDetails(User user) {
+        // Convert user roles to GrantedAuthorities
         List<GrantedAuthority> authorities = user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
+        // Create and return new ShopUserDetails instance
         return new ShopUserDetails(
                 user.getId(),
                 user.getEmail(),

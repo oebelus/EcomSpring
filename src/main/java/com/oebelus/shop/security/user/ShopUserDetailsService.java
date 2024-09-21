@@ -17,7 +17,7 @@ public class ShopUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { // load user-specific data during the authentication process
         User user = Optional.ofNullable(userRepository.findByEmail(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
