@@ -49,6 +49,7 @@ public class ShopConfig {
         return new AuthTokenFilter();
     }
 
+    @Bean
     public AuthenticationManager authenticatorManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
